@@ -22,6 +22,36 @@ if 'Course Title' in df.columns:
 
 df['Course'] = df['Course'].astype(str).str.strip()
 
+# --- Extract reference data from known rows ---
+def get_value_by_label(df, label):
+    match = df[df.iloc[:, 0] == label]
+    if not match.empty:
+        return match.iloc[0, 2]
+    return None
+
+program_pct_complete = float(get_value_by_label(df, '% Completed (Program Days)'))
+days_completed = int(get_value_by_label(df, 'Days Completed'))
+total_days = int(get_value_by_label(df, 'Total Days'))
+
+total_required_days = int(get_value_by_label(df, 'Total Days (Courses)'))
+total_completed_days = int(get_value_by_label(df, 'Days Completed (Courses)'))
+courses_day_pct = float(get_value_by_label(df, '% Completed (Course Days)'))
+
+completed_courses = float(get_value_by_label(df, 'Number of Completed Courses'))
+total_courses = int(get_value_by_label(df, 'Total Number of Courses'))
+completed_courses_pct = float(get_value_by_label(df, 'Completed Courses %'))
+
+total_books = int(get_value_by_label(df, 'Total Books'))
+total_pages = int(get_value_by_label(df, 'Total Pages'))
+
+theses_total = int(get_value_by_label(df, 'Total'))
+theses_completed = int(get_value_by_label(df, 'Completed'))
+theses_pct = float(get_value_by_label(df, 'Theses Completed %'))
+
+comps_total = int(get_value_by_label(df, 'Total.1'))
+comps_completed = int(get_value_by_label(df, 'Completed.1'))
+comps_pct = float(get_value_by_label(df, '% Completed'))
+
 # --- Filter only the 10 curriculum courses ---
 curriculum_courses = [
     "Foundations of Strategy",
@@ -54,40 +84,22 @@ def determine_status(row):
 
 df['Status'] = df.apply(determine_status, axis=1)
 
-# --- Program Timeline (hardcoded from sheet for now) ---
-program_pct_complete = 78.76
-days_completed = 267
-total_days = 339
-
-# --- KPI Calculations ---
-total_courses = len(df)
-completed_courses = (df['Status'] == '✅ Completed').sum()
-completed_courses_pct = round((completed_courses / total_courses) * 100, 1)
-
-total_books = int(df['Completed Books'].sum())
-total_pages = int(df['Book Pages'].sum())
-total_required_days = df['Required Days'].sum()
-total_completed_days = df['Completed Days'].sum()
-
-# --- Theses & Comps ---
-theses_total = 45
-theses_completed = 4
-theses_pct = round((theses_completed / theses_total) * 100, 1)
-
-comps_total = 45
-comps_completed = 0
-comps_pct = round((comps_completed / comps_total) * 100, 1)
+# --- Display Course Completion Status ---
+st.markdown("### 📏 Course Completion Status")
+st.progress(courses_day_pct / 100)
+st.caption(f"{total_completed_days} of {total_required_days} course days completed ({courses_day_pct}%)")
 
 # --- Display Overall Program Progress ---
-st.markdown("### 🗕️ Overall Program Progress")
+st.markdown("### 📅 Overall Program Progress")
 st.progress(program_pct_complete / 100)
-st.caption(f"{days_completed} of {total_days} days completed ({program_pct_complete}%)")
+st.caption(f"{days_completed} of {total_days} calendar days completed ({program_pct_complete}%)")
 
 # --- KPI Display ---
 st.markdown("### 📊 Summary Statistics")
 col1, col2, col3 = st.columns(3)
 with col1:
     st.metric("Course Completion", f"{completed_courses} / {total_courses} ({completed_courses_pct}%)")
+    st.metric("Course Days Completed", f"{total_completed_days} / {total_required_days} ({courses_day_pct}%)")
 with col2:
     st.metric("Books Completed", f"{total_books}")
     st.metric("Pages Read", f"{total_pages}")
@@ -117,7 +129,7 @@ col_bar1, col_bar2, col_bar3 = st.columns(3)
 with col_bar1:
     st.subheader("📘 Courses")
     st.progress(completed_courses / total_courses)
-    st.caption(f"{completed_courses} of {total_courses} courses completed ({completed_courses_pct}%)")
+    st.caption(f"{completed_courses} of {total_courses} courses completed ({completed_courses_pct}%)\n{total_completed_days} of {total_required_days} course days ({courses_day_pct}%)")
 
 with col_bar2:
     st.subheader("🎓 Theses")
@@ -138,4 +150,4 @@ if existing_cols:
     df_display.index = range(1, len(df_display) + 1)
     st.dataframe(df_display)
 else:
-    st.warning("\u26a0\ufe0f None of the expected columns were found in the data.")
+    st.warning("⚠️ None of the expected columns were found in the data.")
