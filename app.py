@@ -10,12 +10,23 @@ st.markdown("Auto-updating dashboard from Google Sheets — tracking books, cour
 url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTUoPJRLuSRN1Y2GOSunfe0YtIECq2AeRzpVRoTVbDWbJ0Zw3J7VPUpKZjSDlKEYIeoELN39pBFUZJB/pub?gid=1897265951&single=true&output=csv"
 df = pd.read_csv(url)
 
-# --- Clean Data ---
-df.columns = df.iloc[1]
+# --- Clean Columns and Header Row ---
+df = df.dropna(how="all", axis=1)  # drop empty columns
+df.columns = df.iloc[1].fillna("").str.strip()  # row 1 = header
 df = df[2:].reset_index(drop=True)
-df = df.rename(columns={' Book Pages': 'Book Pages'})
-for col in ['Required Days', 'Completed Days', '% Complete', 'Completed Books', 'Book Pages']:
-    df[col] = pd.to_numeric(df[col], errors='coerce')
+
+# Rename 'Course Title' to 'Course' for clarity
+if 'Course Title' in df.columns:
+    df = df.rename(columns={'Course Title': 'Course'})
+
+# Strip all column names to remove hidden spaces
+df = df.rename(columns=lambda x: x.strip())
+
+# Ensure numeric columns are parsed correctly
+numeric_cols = ['Required Days', 'Completed Days', '% Complete', 'Completed Books', 'Book Pages']
+for col in numeric_cols:
+    if col in df.columns:
+        df[col] = pd.to_numeric(df[col], errors='coerce')
 
 # --- KPIs ---
 total_courses = df['Course'].nunique()
@@ -29,7 +40,7 @@ total_required_days = df['Required Days'].sum()
 total_completed_days = df['Completed Days'].sum()
 program_day_pct = round((total_completed_days / total_required_days) * 100, 1)
 
-# Hard-coded for now; could automate from sheet later
+# Hardcoded extras — can be dynamic later
 theses_total = 45
 theses_completed = 4
 theses_pct = round((theses_completed / theses_total) * 100, 1)
@@ -53,12 +64,13 @@ with col3:
 
 # --- Bar Chart of Course Progress ---
 st.markdown("### 📚 Course Completion Status")
-bar = alt.Chart(df).mark_bar().encode(
-    x=alt.X('Course', sort='-y'),
-    y=alt.Y('% Complete', scale=alt.Scale(domain=[0, 1])),
-    tooltip=['Course', '% Complete']
-).properties(width=800, height=400)
-st.altair_chart(bar, use_container_width=True)
+if '% Complete' in df.columns and 'Course' in df.columns:
+    bar = alt.Chart(df).mark_bar().encode(
+        x=alt.X('Course', sort='-y'),
+        y=alt.Y('% Complete', scale=alt.Scale(domain=[0, 1])),
+        tooltip=['Course', '% Complete']
+    ).properties(width=800, height=400)
+    st.altair_chart(bar, use_container_width=True)
 
 # --- Pie Chart ---
 completed = completed_courses
