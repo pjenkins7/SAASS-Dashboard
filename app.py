@@ -98,42 +98,25 @@ bar = alt.Chart(df).mark_bar().encode(
 ).properties(width=800, height=400)
 st.altair_chart(bar, use_container_width=True)
 
-# --- Side-by-side Pie Charts ---
-col_pie1, col_pie2, col_pie3 = st.columns(3)
+# --- Horizontal Progress Bars Section ---
+st.markdown("### 📏 Progress Overview")
 
-with col_pie1:
-    status_counts = df['Status'].value_counts().reset_index()
-    status_counts.columns = ['Status', 'Count']
-    pie = alt.Chart(status_counts).mark_arc().encode(
-        theta='Count',
-        color='Status',
-        tooltip=['Status', 'Count']
-    ).properties(title="Course Completion Status")
-    st.altair_chart(pie, use_container_width=True)
+col_bar1, col_bar2, col_bar3 = st.columns(3)
 
-with col_pie2:
-    thesis_df = pd.DataFrame({
-        'Status': ['Completed', 'Remaining'],
-        'Count': [theses_completed, theses_total - theses_completed]
-    })
-    pie_thesis = alt.Chart(thesis_df).mark_arc().encode(
-        theta='Count',
-        color='Status',
-        tooltip=['Status', 'Count']
-    ).properties(title="Theses Completion")
-    st.altair_chart(pie_thesis, use_container_width=True)
+with col_bar1:
+    st.subheader("📘 Courses")
+    st.progress(completed_courses / total_courses)
+    st.caption(f"{completed_courses} of {total_courses} courses completed ({completed_courses_pct}%)")
 
-with col_pie3:
-    comps_df = pd.DataFrame({
-        'Status': ['Completed', 'Remaining'],
-        'Count': [comps_completed, comps_total - comps_completed]
-    })
-    pie_comps = alt.Chart(comps_df).mark_arc().encode(
-        theta='Count',
-        color='Status',
-        tooltip=['Status', 'Count']
-    ).properties(title="Comps Completion")
-    st.altair_chart(pie_comps, use_container_width=True)
+with col_bar2:
+    st.subheader("🎓 Theses")
+    st.progress(theses_completed / theses_total)
+    st.caption(f"{theses_completed} of {theses_total} theses completed ({theses_pct}%)")
+
+with col_bar3:
+    st.subheader("🧠 Comps")
+    st.progress(comps_completed / comps_total)
+    st.caption(f"{comps_completed} of {comps_total} comps completed ({comps_pct}%)")
 
 # --- Raw Table ---
 st.markdown("### 🧾 Raw Course Table")
