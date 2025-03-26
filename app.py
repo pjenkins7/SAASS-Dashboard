@@ -30,7 +30,7 @@ for col in numeric_cols:
 
 # --- KPIs ---
 total_courses = df['Course'].nunique() if 'Course' in df.columns else 0
-completed_courses = df[df['% Complete'] == 1].shape[0] if '% Complete' in df.columns else 0
+completed_courses = df[df['% Complete'] >= 0.999].shape[0]
 completed_courses_pct = round((completed_courses / total_courses) * 100, 1) if total_courses > 0 else 0
 
 total_books = int(df['Completed Books'].sum()) if 'Completed Books' in df.columns else 0
