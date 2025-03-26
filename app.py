@@ -101,13 +101,14 @@ with col3:
 
 st.markdown("### 📚 Course Completion Status")
 df['Progress %'] = (df['Completed Days'] / df['Required Days']).clip(0, 1)
-bar = alt.Chart(df).mark_bar().encode(
+
+bar = alt.Chart(df_chart).mark_bar().encode(
     x=alt.X('Course', sort='-y'),
-    y=alt.Y('Progress %', scale=alt.Scale(domain=[0, 1])),
-    color='Status',
+    y=alt.Y('Progress %', title="Progress", scale=alt.Scale(domain=[0, 100]), axis=alt.Axis(format='%')),
+    color=alt.Color('Status', legend=alt.Legend(title="Status")),
     tooltip=['Course', 'Completed Days', 'Required Days', 'Status']
 ).properties(width=800, height=400)
-st.altair_chart(bar, use_container_width=True)
+
 
 # --- Unified Progress Bar Display ---
 st.markdown("### 📈 Visual Progress Overview")
