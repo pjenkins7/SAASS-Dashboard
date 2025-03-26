@@ -78,7 +78,7 @@ comps_pct = round((comps_completed / comps_total) * 100, 1)
 st.markdown("### 📊 Summary Statistics")
 col1, col2, col3 = st.columns(3)
 with col1:
-    st.metric("Overall Program Progress", f"{program_day_pct}%")
+    st.metric("Overall Course Progress", f"{program_day_pct}%")
     st.metric("Course Completion", f"{completed_courses} / {total_courses} ({completed_courses_pct}%)")
 with col2:
     st.metric("Books Completed", f"{total_books}")
