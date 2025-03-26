@@ -3,8 +3,8 @@ import pandas as pd
 import altair as alt
 import datetime
 
-st.set_page_config(page_title="SAASS Progress Dashboard", layout="wide")
-st.title("\U0001F4D8 SAASS XXXIV Progress Dashboard")
+st.set_page_config(page_title="SAASS XXXIV Progress Dashboard", layout="wide")
+st.title("\U0001F4D8 SAASS Progress Dashboard")
 st.markdown("Auto-updating dashboard from Google Sheets — tracking books, courses, and program milestones.")
 
 # --- Load Google Sheet Data ---
