@@ -133,10 +133,29 @@ st.caption(f"{comps_completed} of {comps_total} comps completed ({comps_pct}%)")
 
 
 
+# st.markdown("### Course Table")
+# visible_cols = ['Course', 'Course Number', 'Required Days', 'Completed Days', 'Completed Books', 'Book Pages', 'Status']
+# existing_cols = [col for col in visible_cols if col in df.columns]
+# if existing_cols:
+#     st.dataframe(df[existing_cols])
+# else:
+#     st.warning("⚠️ None of the expected columns were found in the data.")
+
 st.markdown("### Course Table")
 visible_cols = ['Course', 'Course Number', 'Required Days', 'Completed Days', 'Completed Books', 'Book Pages', 'Status']
 existing_cols = [col for col in visible_cols if col in df.columns]
 if existing_cols:
-    st.dataframe(df[existing_cols])
+    df_totals = df[existing_cols].copy()
+    totals_row = {
+        'Course': 'TOTAL',
+        'Course Number': '',
+        'Required Days': df['Required Days'].sum(),
+        'Completed Days': df['Completed Days'].sum(),
+        'Completed Books': df['Completed Books'].sum(),
+        'Book Pages': df['Book Pages'].sum(),
+        'Status': ''
+    }
+    df_totals = pd.concat([df_totals, pd.DataFrame([totals_row])], ignore_index=True)
+    st.dataframe(df_totals)
 else:
     st.warning("⚠️ None of the expected columns were found in the data.")
