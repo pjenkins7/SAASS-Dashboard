@@ -23,14 +23,18 @@ if 'Course Title' in df.columns:
 df = df.rename(columns=lambda x: x.strip())
 
 # Ensure numeric columns are parsed correctly
-numeric_cols = ['Required Days', 'Completed Days', '% Complete', 'Completed Books', 'Book Pages']
+numeric_cols = ['Required Days', 'Completed Days', 'Completed Books', 'Book Pages']
 for col in numeric_cols:
     if col in df.columns:
         df[col] = pd.to_numeric(df[col], errors='coerce')
 
+# --- Compute Completion Based on Days ---
+df['Is Completed'] = df['Completed Days'] >= df['Required Days']
+df['Status'] = df['Is Completed'].apply(lambda x: '✅ Completed' if x else '⏳ In Progress')
+
 # --- KPIs ---
 total_courses = df['Course'].nunique() if 'Course' in df.columns else 0
-completed_courses = df[df['% Complete'] >= 0.999].shape[0]
+completed_courses = df[df['Is Completed']].shape[0]
 completed_courses_pct = round((completed_courses / total_courses) * 100, 1) if total_courses > 0 else 0
 
 total_books = int(df['Completed Books'].sum()) if 'Completed Books' in df.columns else 0
@@ -64,21 +68,21 @@ with col3:
 
 # --- Bar Chart of Course Progress ---
 st.markdown("### 📚 Course Completion Status")
-if '% Complete' in df.columns and 'Course' in df.columns:
+if 'Completed Days' in df.columns and 'Required Days' in df.columns and 'Course' in df.columns:
+    df['Progress %'] = (df['Completed Days'] / df['Required Days']).clip(0, 1)
     bar = alt.Chart(df).mark_bar().encode(
         x=alt.X('Course', sort='-y'),
-        y=alt.Y('% Complete', scale=alt.Scale(domain=[0, 1])),
-        tooltip=['Course', '% Complete']
+        y=alt.Y('Progress %', scale=alt.Scale(domain=[0, 1])),
+        color='Status',
+        tooltip=['Course', 'Completed Days', 'Required Days', 'Progress %']
     ).properties(width=800, height=400)
     st.altair_chart(bar, use_container_width=True)
 
 # --- Pie Chart ---
 if total_courses > 0:
-    completed = completed_courses
-    incomplete = total_courses - completed_courses
     pie_data = pd.DataFrame({
-        'Status': ['Completed', 'Incomplete'],
-        'Count': [completed, incomplete]
+        'Status': ['Completed', 'In Progress'],
+        'Count': [completed_courses, total_courses - completed_courses]
     })
     pie = alt.Chart(pie_data).mark_arc().encode(
         theta='Count',
@@ -91,7 +95,7 @@ if total_courses > 0:
 st.markdown("### 🧾 Raw Course Table")
 
 # Define the columns we want to show
-expected_cols = ['Course', 'Course Number', 'Required Days', 'Completed Days', 'Completed Books', 'Book Pages', '% Complete']
+expected_cols = ['Course', 'Course Number', 'Required Days', 'Completed Days', 'Completed Books', 'Book Pages', 'Status']
 available_cols = [col for col in expected_cols if col in df.columns]
 
 # Show only available ones (avoids KeyError)
