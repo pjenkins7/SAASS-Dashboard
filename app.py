@@ -84,7 +84,7 @@ comps_total = 45
 comps_completed = 0
 comps_pct = round((comps_completed / comps_total) * 100, 1)
 
-# --- KPI Display ---
+# --- KPI Display (Reorganized Layout) ---
 st.markdown("### 📊 Summary Statistics")
 col1, col2, col3 = st.columns(3)
 with col1:
@@ -111,13 +111,19 @@ bar = alt.Chart(df).mark_bar().encode(
 ).properties(width=800, height=400)
 st.altair_chart(bar, use_container_width=True)
 
-# --- Horizontal Progress Bars Section ---
-st.markdown("### 📏 Progress Overview")
+# --- Unified Progress Bar Display ---
+st.markdown("### 📈 Visual Progress Overview")
+st.subheader("🗓️ Program Completion")
+st.progress(program_pct_complete / 100)
+st.caption(f"{completed_days} of {total_days} calendar days completed ({program_pct_complete}%)")
 
-col_bar1, col_bar2, col_bar3 = st.columns(3)
+st.subheader("📅 Overall Course Progress")
+st.progress(program_day_pct / 100)
+st.caption(f"{total_completed_days} of {total_required_days} course days completed ({program_day_pct}%)")
 
+col_bar1, col_bar2 = st.columns(2)
 with col_bar1:
-    st.subheader("📘 Courses")
+    st.subheader("📘 Courses Completed")
     st.progress(completed_courses / total_courses)
     st.caption(f"{completed_courses} of {total_courses} courses completed ({completed_courses_pct}%)")
 
@@ -126,12 +132,11 @@ with col_bar2:
     st.progress(theses_completed / theses_total)
     st.caption(f"{theses_completed} of {theses_total} theses completed ({theses_pct}%)")
 
-with col_bar3:
-    st.subheader("🧠 Comps")
-    st.progress(comps_completed / comps_total)
-    st.caption(f"{comps_completed} of {comps_total} comps completed ({comps_pct}%)")
+st.subheader("🧠 Comps")
+st.progress(comps_completed / comps_total)
+st.caption(f"{comps_completed} of {comps_total} comps completed ({comps_pct}%)")
 
-# --- Raw Table ---
+
 st.markdown("### 🧾 Raw Course Table")
 visible_cols = ['Course', 'Course Number', 'Required Days', 'Completed Days', 'Completed Books', 'Book Pages', 'Status']
 existing_cols = [col for col in visible_cols if col in df.columns]
