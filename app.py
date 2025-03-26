@@ -29,72 +29,52 @@ def get_value_by_label(df, label):
         return match.iloc[0, 2]
     return None
 
-program_pct_complete = float(get_value_by_label(df, '% Completed (Program Days)'))
-days_completed = int(get_value_by_label(df, 'Days Completed'))
-total_days = int(get_value_by_label(df, 'Total Days'))
+def safe_float(val, label):
+    try:
+        return float(val)
+    except (ValueError, TypeError):
+        st.warning(f"⚠️ Could not convert '{label}' to float. Value: {val}")
+        return 0.0
 
-total_required_days = int(get_value_by_label(df, 'Total Days (Courses)'))
-total_completed_days = int(get_value_by_label(df, 'Days Completed (Courses)'))
-courses_day_pct = float(get_value_by_label(df, '% Completed (Course Days)'))
+def safe_int(val, label):
+    try:
+        return int(float(val))
+    except (ValueError, TypeError):
+        st.warning(f"⚠️ Could not convert '{label}' to int. Value: {val}")
+        return 0
 
-completed_courses = float(get_value_by_label(df, 'Number of Completed Courses'))
-total_courses = int(get_value_by_label(df, 'Total Number of Courses'))
-completed_courses_pct = float(get_value_by_label(df, 'Completed Courses %'))
+program_pct_complete = safe_float(get_value_by_label(df, '% Completed (Program Days)'), '% Completed (Program Days)')
+days_completed = safe_int(get_value_by_label(df, 'Days Completed'), 'Days Completed')
+total_days = safe_int(get_value_by_label(df, 'Total Days'), 'Total Days')
 
-total_books = int(get_value_by_label(df, 'Total Books'))
-total_pages = int(get_value_by_label(df, 'Total Pages'))
+total_required_days = safe_int(get_value_by_label(df, 'Total Days (Courses)'), 'Total Days (Courses)')
+total_completed_days = safe_int(get_value_by_label(df, 'Days Completed (Courses)'), 'Days Completed (Courses)')
+courses_day_pct = safe_float(get_value_by_label(df, '% Completed (Course Days)'), '% Completed (Course Days)')
 
-theses_total = int(get_value_by_label(df, 'Total'))
-theses_completed = int(get_value_by_label(df, 'Completed'))
-theses_pct = float(get_value_by_label(df, 'Theses Completed %'))
+completed_courses = safe_float(get_value_by_label(df, 'Number of Completed Courses'), 'Number of Completed Courses')
+total_courses = safe_int(get_value_by_label(df, 'Total Number of Courses'), 'Total Number of Courses')
+completed_courses_pct = safe_float(get_value_by_label(df, 'Completed Courses %'), 'Completed Courses %')
 
-comps_total = int(get_value_by_label(df, 'Total.1'))
-comps_completed = int(get_value_by_label(df, 'Completed.1'))
-comps_pct = float(get_value_by_label(df, '% Completed'))
+total_books = safe_int(get_value_by_label(df, 'Total Books'), 'Total Books')
+total_pages = safe_int(get_value_by_label(df, 'Total Pages'), 'Total Pages')
 
-# --- Filter only the 10 curriculum courses ---
-curriculum_courses = [
-    "Foundations of Strategy",
-    "Foundations of Military Theory",
-    "Air Power in the Age of Total War",
-    "Foundations of Int'l Politics",
-    "Air Power in the Age of Limited War",
-    "Coercion in Theory and Practice",
-    "Irregular Warfare",
-    "Information and Cyber Power",
-    "Space Power",
-    "Technology and Military Innovation"
-]
-df = df[df['Course'].isin(curriculum_courses)].copy()
+theses_total = safe_int(get_value_by_label(df, 'Total'), 'Total')
+theses_completed = safe_int(get_value_by_label(df, 'Completed'), 'Completed')
+theses_pct = safe_float(get_value_by_label(df, 'Theses Completed %'), 'Theses Completed %')
 
-# --- Convert numeric columns ---
-numeric_cols = ['Required Days', 'Completed Days', 'Completed Books', 'Book Pages']
-for col in numeric_cols:
-    if col in df.columns:
-        df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0)
+comps_total = safe_int(get_value_by_label(df, 'Total.1'), 'Total.1')
+comps_completed = safe_int(get_value_by_label(df, 'Completed.1'), 'Completed.1')
+comps_pct = safe_float(get_value_by_label(df, '% Completed'), '% Completed')
 
-# --- Add Status column ---
-def determine_status(row):
-    if row['Completed Days'] >= row['Required Days'] and row['Required Days'] > 0:
-        return '✅ Completed'
-    elif row['Completed Days'] == 0:
-        return '🚫 Not Started'
-    else:
-        return '⏳ In Progress'
-
-df['Status'] = df.apply(determine_status, axis=1)
-
-# --- Display Course Completion Status ---
+# --- Visualizations and Summary ---
 st.markdown("### 📏 Course Completion Status")
 st.progress(courses_day_pct / 100)
 st.caption(f"{total_completed_days} of {total_required_days} course days completed ({courses_day_pct}%)")
 
-# --- Display Overall Program Progress ---
 st.markdown("### 📅 Overall Program Progress")
 st.progress(program_pct_complete / 100)
 st.caption(f"{days_completed} of {total_days} calendar days completed ({program_pct_complete}%)")
 
-# --- KPI Display ---
 st.markdown("### 📊 Summary Statistics")
 col1, col2, col3 = st.columns(3)
 with col1:
@@ -107,47 +87,34 @@ with col3:
     st.metric("Theses Completed", f"{theses_completed} / {theses_total} ({theses_pct}%)")
     st.metric("Comps Completed", f"{comps_completed} / {comps_total} ({comps_pct}%)")
 
-# --- Bar Chart of Progress ---
-st.markdown("### 📚 Course Completion Status")
-df_chart = df[df['Status'] != '🚫 Not Started'].copy()
-df_chart['Progress %'] = (df_chart['Completed Days'] / df_chart['Required Days']).clip(0, 1) * 100
+# --- Course Completion Chart ---
+st.markdown("### 📚 Course Completion Chart")
+if 'Required Days' in df.columns and 'Completed Days' in df.columns:
+    df['Required Days'] = pd.to_numeric(df['Required Days'], errors='coerce')
+    df['Completed Days'] = pd.to_numeric(df['Completed Days'], errors='coerce')
+    df['Progress %'] = (df['Completed Days'] / df['Required Days']).clip(0, 1) * 100
+    df_chart = df[df['Required Days'] > 0].copy()
 
-bar = alt.Chart(df_chart).mark_bar().encode(
-    x=alt.X('Course', sort='-y'),
-    y=alt.Y('Progress %', title="Progress", scale=alt.Scale(domain=[0, 100]), axis=alt.Axis(format='%')),
-    color=alt.Color('Status', legend=alt.Legend(title="Status")),
-    tooltip=['Course', 'Completed Days', 'Required Days', 'Status']
-).properties(width=800, height=400)
+    bar = alt.Chart(df_chart).mark_bar().encode(
+        x=alt.X('Course', sort='-y'),
+        y=alt.Y('Progress %', title="Progress", scale=alt.Scale(domain=[0, 100]), axis=alt.Axis(format='%')),
+        tooltip=['Course', 'Completed Days', 'Required Days']
+    ).properties(width=800, height=400)
 
-st.altair_chart(bar, use_container_width=True)
+    st.altair_chart(bar, use_container_width=True)
 
-# --- Horizontal Progress Bars Section ---
+# --- Progress Overview Section ---
 st.markdown("### 📏 Progress Overview")
-
 col_bar1, col_bar2, col_bar3 = st.columns(3)
-
 with col_bar1:
     st.subheader("📘 Courses")
     st.progress(completed_courses / total_courses)
     st.caption(f"{completed_courses} of {total_courses} courses completed ({completed_courses_pct}%)\n{total_completed_days} of {total_required_days} course days ({courses_day_pct}%)")
-
 with col_bar2:
     st.subheader("🎓 Theses")
     st.progress(theses_completed / theses_total)
     st.caption(f"{theses_completed} of {theses_total} theses completed ({theses_pct}%)")
-
 with col_bar3:
     st.subheader("🧠 Comps")
     st.progress(comps_completed / comps_total)
     st.caption(f"{comps_completed} of {comps_total} comps completed ({comps_pct}%)")
-
-# --- Raw Table ---
-st.markdown("### 🧾 Raw Course Table")
-visible_cols = ['Course', 'Course Number', 'Required Days', 'Completed Days', 'Completed Books', 'Book Pages', 'Status']
-existing_cols = [col for col in visible_cols if col in df.columns]
-if existing_cols:
-    df_display = df[existing_cols].copy()
-    df_display.index = range(1, len(df_display) + 1)
-    st.dataframe(df_display)
-else:
-    st.warning("⚠️ None of the expected columns were found in the data.")
