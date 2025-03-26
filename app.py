@@ -16,11 +16,12 @@ df.columns = df.iloc[1].fillna("").str.strip()
 df = df[2:].reset_index(drop=True)
 df = df.rename(columns=lambda x: x.strip())
 
-# Rename 'Course Title' to 'Course'
 if 'Course Title' in df.columns:
     df = df.rename(columns={'Course Title': 'Course'})
 
-# Filter only the 10 curriculum courses
+df['Course'] = df['Course'].astype(str).str.strip()
+
+# --- Filter only the 10 curriculum courses (safe match) ---
 curriculum_courses = [
     "Foundations of Strategy",
     "Foundations of Military Theory",
@@ -33,15 +34,16 @@ curriculum_courses = [
     "Space Power",
     "Technology and Military Innovation"
 ]
+
 df = df[df['Course'].isin(curriculum_courses)].copy()
 
-# Convert numeric columns
+# --- Convert numeric columns ---
 numeric_cols = ['Required Days', 'Completed Days', 'Completed Books', 'Book Pages']
 for col in numeric_cols:
     if col in df.columns:
         df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0)
 
-# Status logic
+# --- Add Status column ---
 def determine_status(row):
     if row['Completed Days'] >= row['Required Days'] and row['Required Days'] > 0:
         return '✅ Completed'
@@ -63,7 +65,7 @@ total_required_days = df['Required Days'].sum()
 total_completed_days = df['Completed Days'].sum()
 program_day_pct = round((total_completed_days / total_required_days) * 100, 1) if total_required_days > 0 else 0
 
-# --- Theses & Comps (Hardcoded for now) ---
+# --- Theses & Comps ---
 theses_total = 45
 theses_completed = 4
 theses_pct = round((theses_completed / theses_total) * 100, 1)
@@ -96,39 +98,42 @@ bar = alt.Chart(df).mark_bar().encode(
 ).properties(width=800, height=400)
 st.altair_chart(bar, use_container_width=True)
 
-# --- Pie Chart: Course Completion Status ---
-status_counts = df['Status'].value_counts().reset_index()
-status_counts.columns = ['Status', 'Count']
-pie = alt.Chart(status_counts).mark_arc().encode(
-    theta='Count',
-    color='Status',
-    tooltip=['Status', 'Count']
-).properties(title="Course Status Breakdown")
-st.altair_chart(pie, use_container_width=True)
+# --- Side-by-side Pie Charts ---
+col_pie1, col_pie2, col_pie3 = st.columns(3)
 
-# --- Pie Chart: Theses Completion ---
-thesis_df = pd.DataFrame({
-    'Status': ['Completed', 'Remaining'],
-    'Count': [theses_completed, theses_total - theses_completed]
-})
-pie_thesis = alt.Chart(thesis_df).mark_arc().encode(
-    theta='Count',
-    color='Status',
-    tooltip=['Status', 'Count']
-).properties(title="Theses Completion")
-st.altair_chart(pie_thesis, use_container_width=True)
+with col_pie1:
+    status_counts = df['Status'].value_counts().reset_index()
+    status_counts.columns = ['Status', 'Count']
+    pie = alt.Chart(status_counts).mark_arc().encode(
+        theta='Count',
+        color='Status',
+        tooltip=['Status', 'Count']
+    ).properties(title="Course Completion Status")
+    st.altair_chart(pie, use_container_width=True)
 
-# --- Pie Chart: Comps Completion ---
-comps_df = pd.DataFrame({
-    'Status': ['Completed', 'Remaining'],
-    'Count': [comps_completed, comps_total - comps_completed]
-})
-pie_comps = alt.Chart(comps_df).mark_arc().encode(
-    theta='Count',
-    color='Status',
-    tooltip=['Status', 'Count']
-).properties(title="Comps Completion")
-st.altair_chart(pie_comps, use_container_width=True)
+with col_pie2:
+    thesis_df = pd.DataFrame({
+        'Status': ['Completed', 'Remaining'],
+        'Count': [theses_completed, theses_total - theses_completed]
+    })
+    pie_thesis = alt.Chart(thesis_df).mark_arc().encode(
+        theta='Count',
+        color='Status',
+        tooltip=['Status', 'Count']
+    ).properties(title="Theses Completion")
+    st.altair_chart(pie_thesis, use_container_width=True)
+
+with col_pie3:
+    comps_df = pd.DataFrame({
+        'Status': ['Completed', 'Remaining'],
+        'Count': [comps_completed, comps_total - comps_completed]
+    })
+    pie_comps = alt.Chart(comps_df).mark_arc().encode(
+        theta='Count',
+        color='Status',
+        tooltip=['Status', 'Count']
+    ).properties(title="Comps Completion")
+    st.altair_chart(pie_comps, use_container_width=True)
 
 # --- Raw Table ---
 st.markdown("### 🧾 Raw Course Table")
