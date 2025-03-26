@@ -148,7 +148,6 @@ if existing_cols:
     df_totals = df[existing_cols].copy()
     totals_row = {
         'Course': 'TOTAL',
-        'Course Number': '',
         'Required Days': df['Required Days'].sum(),
         'Completed Days': df['Completed Days'].sum(),
         'Completed Books': df['Completed Books'].sum(),
