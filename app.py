@@ -108,7 +108,7 @@ bar = alt.Chart(df_chart).mark_bar().encode(
     color=alt.Color('Status', legend=alt.Legend(title="Status")),
     tooltip=['Course', 'Completed Days', 'Required Days', 'Status']
 ).properties(width=800, height=400)
-
+st.altair_chart(bar, use_container_width=True)
 
 # --- Unified Progress Bar Display ---
 st.markdown("### 📈 Visual Progress Overview")
