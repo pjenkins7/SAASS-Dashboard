@@ -24,7 +24,7 @@ df['Course'] = df['Course'].astype(str).str.strip()
 
 # --- Extract reference data from known rows ---
 def get_value_by_label(df, label):
-    match = df[df.iloc[:, 0] == label]
+    match = df[df.iloc[:, 1] == label]
     if not match.empty:
         return match.iloc[0, 2]
     return None
