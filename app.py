@@ -132,7 +132,7 @@ st.caption(f"{theses_completed} of {theses_total} theses completed ({theses_pct}
 
 st.subheader("🧠 Comps")
 st.progress(comps_completed / comps_total)
-st.caption(f"{comps_completed} of {comps_total} comps completed ({comps_pct}%)")")
+st.caption(f"{comps_completed} of {comps_total} comps completed ({comps_pct}%))")
 
 
 st.markdown("### 🧾 Raw Course Table")
