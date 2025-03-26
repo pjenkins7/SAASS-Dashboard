@@ -1,9 +1,10 @@
 import streamlit as st
 import pandas as pd
 import altair as alt
+import datetime
 
 st.set_page_config(page_title="SAASS Progress Dashboard", layout="wide")
-st.title("📘 SAASS Progress Dashboard")
+st.title("\U0001F4D8 SAASS Progress Dashboard")
 st.markdown("Auto-updating dashboard from Google Sheets — tracking books, courses, and program milestones.")
 
 # --- Load Google Sheet Data ---
@@ -54,6 +55,15 @@ def determine_status(row):
 
 df['Status'] = df.apply(determine_status, axis=1)
 
+# --- Program Date Logic ---
+program_start = datetime.datetime(2024, 7, 1)
+program_end = datetime.datetime(2025, 6, 4)
+current_date = datetime.datetime.today()
+
+total_days = (program_end - program_start).days
+completed_days = (current_date - program_start).days
+program_pct_complete = round((completed_days / total_days) * 100, 2)
+
 # --- KPI Calculations ---
 total_courses = len(df)
 completed_courses = (df['Status'] == '✅ Completed').sum()
@@ -78,6 +88,8 @@ comps_pct = round((comps_completed / comps_total) * 100, 1)
 st.markdown("### 📊 Summary Statistics")
 col1, col2, col3 = st.columns(3)
 with col1:
+    st.metric("Program Completion", f"{completed_days} / {total_days} days ({program_pct_complete}%)")
+    st.progress(program_pct_complete / 100)
     st.metric("Overall Course Progress", f"{total_completed_days} / {total_required_days}({program_day_pct}%)")
     st.metric("Course Completion", f"{completed_courses} / {total_courses} ({completed_courses_pct}%)")
 with col2:
