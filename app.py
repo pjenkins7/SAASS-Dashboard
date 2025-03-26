@@ -100,7 +100,7 @@ with col3:
 
 
 st.markdown("### 📚 Course Completion Status")
-df['Progress %'] = (df['Completed Days'] / df['Required Days']).clip(0, 1)
+df['Progress %'] = (df['Completed Days'] / df['Required Days']).clip(0, 1) * 100
 
 bar = alt.Chart(df_chart).mark_bar().encode(
     x=alt.X('Course', sort='-y'),
