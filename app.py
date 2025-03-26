@@ -16,14 +16,11 @@ df.columns = df.iloc[1].fillna("").str.strip()
 df = df[2:].reset_index(drop=True)
 df = df.rename(columns=lambda x: x.strip())
 
-# Rename 'Course Title' to 'Course'
+# Rename 'Course Title' to 'Course' if needed
 if 'Course Title' in df.columns:
     df = df.rename(columns={'Course Title': 'Course'})
 
-# Drop rows with missing Course
-df = df[df['Course'].notnull() & (df['Course'] != "")]
-
-# --- Keep only the 10 known curriculum courses ---
+# --- Filter only the 10 curriculum courses ---
 curriculum_courses = [
     "Foundations of Strategy",
     "Foundations of Military Theory",
@@ -36,29 +33,29 @@ curriculum_courses = [
     "Space Power",
     "Technology and Military Innovation"
 ]
-df = df[df['Course'].isin(curriculum_courses)]
+df = df[df['Course'].isin(curriculum_courses)].copy()
 
-# --- Convert relevant columns ---
+# --- Convert numeric columns ---
 numeric_cols = ['Required Days', 'Completed Days', 'Completed Books', 'Book Pages']
 for col in numeric_cols:
     if col in df.columns:
         df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0)
 
-# --- Add Status Logic ---
+# --- Add status logic ---
 def determine_status(row):
     if row['Completed Days'] >= row['Required Days'] and row['Required Days'] > 0:
         return '✅ Completed'
     elif row['Completed Days'] == 0:
-        return '🔴 Not Started'
+        return '🛑 Not Started'
     else:
         return '⏳ In Progress'
 
 df['Status'] = df.apply(determine_status, axis=1)
 
-# --- KPIs ---
+# --- KPI Calculations ---
 total_courses = len(df)
 completed_courses = (df['Status'] == '✅ Completed').sum()
-not_started_courses = (df['Status'] == '🔴 Not Started').sum()
+not_started_courses = (df['Status'] == '🛑 Not Started').sum()
 completed_courses_pct = round((completed_courses / total_courses) * 100, 1)
 
 total_books = int(df['Completed Books'].sum())
@@ -67,15 +64,16 @@ total_required_days = df['Required Days'].sum()
 total_completed_days = df['Completed Days'].sum()
 program_day_pct = round((total_completed_days / total_required_days) * 100, 1) if total_required_days > 0 else 0
 
-# Hardcoded extras
+# Hardcoded extras (optional: make dynamic later)
 theses_total = 45
 theses_completed = 4
 theses_pct = round((theses_completed / theses_total) * 100, 1)
+
 comps_total = 45
 comps_completed = 0
 comps_pct = 0.0
 
-# --- Display KPIs ---
+# --- KPI Display ---
 st.markdown("### 📊 Summary Statistics")
 col1, col2, col3 = st.columns(3)
 with col1:
