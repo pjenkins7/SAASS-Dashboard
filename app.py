@@ -4,7 +4,7 @@ import altair as alt
 
 st.set_page_config(page_title="SAASS Progress", layout="wide")
 
-st.title("?? SAASS Progress Dashboard")
+st.title("SAASS Progress Dashboard")
 st.markdown("This dashboard updates automatically from a live Google Sheet.")
 
 # Load the Google Sheet data
