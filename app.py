@@ -88,9 +88,9 @@ comps_pct = round((comps_completed / comps_total) * 100, 1)
 st.markdown("### 📊 Summary Statistics")
 col1, col2, col3 = st.columns(3)
 with col1:
-    st.metric("Program Completion", f"{completed_days} / {total_days} days ({program_pct_complete}%)")
-    st.metric("Overall Course Progress", f"{total_completed_days} / {total_required_days} ({program_day_pct}%)")
-    st.metric("Course Completion", f"{completed_courses} / {total_courses} ({completed_courses_pct}%)")
+    st.metric("Program Progress (# of Program Days Completed)", f"{completed_days} / {total_days} days ({program_pct_complete}%)")
+    st.metric("Course Progress (# of Course Days Completed)", f"{total_completed_days} / {total_required_days} ({program_day_pct}%)")
+    st.metric("Course Completion (# of Courses Completed)", f"{completed_courses} / {total_courses} ({completed_courses_pct}%)")
 with col2:
     st.metric("Books Completed", f"{total_books}")
     st.metric("Pages Read", f"{total_pages}")
@@ -111,11 +111,11 @@ st.altair_chart(bar, use_container_width=True)
 # --- Unified Progress Bar Display ---
 st.markdown("### 📈 Visual Progress Overview")
 
-st.subheader("🗓️ Program Completion")
+st.subheader("🗓️ Program Progress")
 st.progress(program_pct_complete / 100)
 st.caption(f"{completed_days} of {total_days} calendar days completed ({program_pct_complete}%)")
 
-st.subheader("📅 Overall Course Progress")
+st.subheader("📅 Course Progress")
 st.progress(program_day_pct / 100)
 st.caption(f"{total_completed_days} of {total_required_days} course days completed ({program_day_pct}%)")
 
