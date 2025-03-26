@@ -147,7 +147,7 @@ existing_cols = [col for col in visible_cols if col in df.columns]
 if existing_cols:
     df_totals = df[existing_cols].copy()
     totals_row = {
-        'Course': '#Total',
+        'Course': 'Total',
         'Required Days': df['Required Days'].sum(),
         'Completed Days': df['Completed Days'].sum(),
         'Completed Books': df['Completed Books'].sum(),
