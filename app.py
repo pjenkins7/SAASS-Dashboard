@@ -132,7 +132,7 @@ st.progress(comps_completed / comps_total)
 st.caption(f"{comps_completed} of {comps_total} comps completed ({comps_pct}%)")
 
 
-st.markdown("Course Table")
+st.markdown("### Course Table")
 visible_cols = ['Course', 'Course Number', 'Required Days', 'Completed Days', 'Completed Books', 'Book Pages', 'Status']
 existing_cols = [col for col in visible_cols if col in df.columns]
 if existing_cols:
