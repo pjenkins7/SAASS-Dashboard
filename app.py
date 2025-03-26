@@ -89,7 +89,9 @@ st.markdown("### 📊 Summary Statistics")
 col1, col2, col3 = st.columns(3)
 with col1:
     st.metric("Program Completion", f"{completed_days} / {total_days} days ({program_pct_complete}%)")
+    st.progress(program_pct_complete / 100)
     st.metric("Overall Course Progress", f"{total_completed_days} / {total_required_days} ({program_day_pct}%)")
+    st.progress(program_day_pct / 100)
     st.metric("Course Completion", f"{completed_courses} / {total_courses} ({completed_courses_pct}%)")
 with col2:
     st.metric("Books Completed", f"{total_books}")
@@ -111,6 +113,7 @@ st.altair_chart(bar, use_container_width=True)
 
 # --- Unified Progress Bar Display ---
 st.markdown("### 📈 Visual Progress Overview")
+
 st.subheader("🗓️ Program Completion")
 st.progress(program_pct_complete / 100)
 st.caption(f"{completed_days} of {total_days} calendar days completed ({program_pct_complete}%)")
@@ -119,20 +122,17 @@ st.subheader("📅 Overall Course Progress")
 st.progress(program_day_pct / 100)
 st.caption(f"{total_completed_days} of {total_required_days} course days completed ({program_day_pct}%)")
 
-col_bar1, col_bar2 = st.columns(2)
-with col_bar1:
-    st.subheader("📘 Courses Completed")
-    st.progress(completed_courses / total_courses)
-    st.caption(f"{completed_courses} of {total_courses} courses completed ({completed_courses_pct}%)")
+st.subheader("📘 Courses Completed")
+st.progress(completed_courses / total_courses)
+st.caption(f"{completed_courses} of {total_courses} courses completed ({completed_courses_pct}%)")
 
-with col_bar2:
-    st.subheader("🎓 Theses")
-    st.progress(theses_completed / theses_total)
-    st.caption(f"{theses_completed} of {theses_total} theses completed ({theses_pct}%)")
+st.subheader("🎓 Theses")
+st.progress(theses_completed / theses_total)
+st.caption(f"{theses_completed} of {theses_total} theses completed ({theses_pct}%)")
 
 st.subheader("🧠 Comps")
 st.progress(comps_completed / comps_total)
-st.caption(f"{comps_completed} of {comps_total} comps completed ({comps_pct}%)")
+st.caption(f"{comps_completed} of {comps_total} comps completed ({comps_pct}%)")")
 
 
 st.markdown("### 🧾 Raw Course Table")
