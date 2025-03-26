@@ -29,16 +29,16 @@ for col in numeric_cols:
         df[col] = pd.to_numeric(df[col], errors='coerce')
 
 # --- KPIs ---
-total_courses = df['Course'].nunique()
-completed_courses = df[df['% Complete'] == 1].shape[0]
-completed_courses_pct = round((completed_courses / total_courses) * 100, 1)
+total_courses = df['Course'].nunique() if 'Course' in df.columns else 0
+completed_courses = df[df['% Complete'] == 1].shape[0] if '% Complete' in df.columns else 0
+completed_courses_pct = round((completed_courses / total_courses) * 100, 1) if total_courses > 0 else 0
 
-total_books = int(df['Completed Books'].sum())
-total_pages = int(df['Book Pages'].sum())
+total_books = int(df['Completed Books'].sum()) if 'Completed Books' in df.columns else 0
+total_pages = int(df['Book Pages'].sum()) if 'Book Pages' in df.columns else 0
 
-total_required_days = df['Required Days'].sum()
-total_completed_days = df['Completed Days'].sum()
-program_day_pct = round((total_completed_days / total_required_days) * 100, 1)
+total_required_days = df['Required Days'].sum() if 'Required Days' in df.columns else 0
+total_completed_days = df['Completed Days'].sum() if 'Completed Days' in df.columns else 0
+program_day_pct = round((total_completed_days / total_required_days) * 100, 1) if total_required_days > 0 else 0
 
 # Hardcoded extras — can be dynamic later
 theses_total = 45
@@ -73,19 +73,29 @@ if '% Complete' in df.columns and 'Course' in df.columns:
     st.altair_chart(bar, use_container_width=True)
 
 # --- Pie Chart ---
-completed = completed_courses
-incomplete = total_courses - completed_courses
-pie_data = pd.DataFrame({
-    'Status': ['Completed', 'Incomplete'],
-    'Count': [completed, incomplete]
-})
-pie = alt.Chart(pie_data).mark_arc().encode(
-    theta='Count',
-    color='Status',
-    tooltip=['Status', 'Count']
-).properties(title="Course Completion Breakdown")
-st.altair_chart(pie, use_container_width=True)
+if total_courses > 0:
+    completed = completed_courses
+    incomplete = total_courses - completed_courses
+    pie_data = pd.DataFrame({
+        'Status': ['Completed', 'Incomplete'],
+        'Count': [completed, incomplete]
+    })
+    pie = alt.Chart(pie_data).mark_arc().encode(
+        theta='Count',
+        color='Status',
+        tooltip=['Status', 'Count']
+    ).properties(title="Course Completion Breakdown")
+    st.altair_chart(pie, use_container_width=True)
 
 # --- Raw Data Table ---
 st.markdown("### 🧾 Raw Course Table")
-st.dataframe(df[['Course', 'Course Number', 'Required Days', 'Completed Days', 'Completed Books', 'Book Pages', '% Complete']])
+
+# Define the columns we want to show
+expected_cols = ['Course', 'Course Number', 'Required Days', 'Completed Days', 'Completed Books', 'Book Pages', '% Complete']
+available_cols = [col for col in expected_cols if col in df.columns]
+
+# Show only available ones (avoids KeyError)
+if available_cols:
+    st.dataframe(df[available_cols])
+else:
+    st.warning("⚠️ None of the expected columns were found in the data.")
