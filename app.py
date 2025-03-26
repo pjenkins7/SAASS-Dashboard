@@ -16,11 +16,12 @@ df.columns = df.iloc[1].fillna("").str.strip()
 df = df[2:].reset_index(drop=True)
 df = df.rename(columns=lambda x: x.strip())
 
-# Rename 'Course Title' to 'Course' if needed
 if 'Course Title' in df.columns:
     df = df.rename(columns={'Course Title': 'Course'})
 
-# --- Filter only the 10 curriculum courses ---
+df['Course'] = df['Course'].astype(str).str.strip()
+
+# --- Filter only the 10 curriculum courses (safe match) ---
 curriculum_courses = [
     "Foundations of Strategy",
     "Foundations of Military Theory",
@@ -33,6 +34,7 @@ curriculum_courses = [
     "Space Power",
     "Technology and Military Innovation"
 ]
+
 df = df[df['Course'].isin(curriculum_courses)].copy()
 
 # --- Convert numeric columns ---
@@ -41,7 +43,7 @@ for col in numeric_cols:
     if col in df.columns:
         df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0)
 
-# --- Add status logic ---
+# --- Add Status column ---
 def determine_status(row):
     if row['Completed Days'] >= row['Required Days'] and row['Required Days'] > 0:
         return '✅ Completed'
@@ -55,7 +57,6 @@ df['Status'] = df.apply(determine_status, axis=1)
 # --- KPI Calculations ---
 total_courses = len(df)
 completed_courses = (df['Status'] == '✅ Completed').sum()
-not_started_courses = (df['Status'] == '🛑 Not Started').sum()
 completed_courses_pct = round((completed_courses / total_courses) * 100, 1)
 
 total_books = int(df['Completed Books'].sum())
@@ -64,14 +65,14 @@ total_required_days = df['Required Days'].sum()
 total_completed_days = df['Completed Days'].sum()
 program_day_pct = round((total_completed_days / total_required_days) * 100, 1) if total_required_days > 0 else 0
 
-# Hardcoded extras (optional: make dynamic later)
+# --- Theses & Comps ---
 theses_total = 45
 theses_completed = 4
 theses_pct = round((theses_completed / theses_total) * 100, 1)
 
 comps_total = 45
 comps_completed = 0
-comps_pct = 0.0
+comps_pct = round((comps_completed / comps_total) * 100, 1)
 
 # --- KPI Display ---
 st.markdown("### 📊 Summary Statistics")
@@ -97,17 +98,31 @@ bar = alt.Chart(df).mark_bar().encode(
 ).properties(width=800, height=400)
 st.altair_chart(bar, use_container_width=True)
 
-# --- Pie Chart: Status Breakdown ---
-status_counts = df['Status'].value_counts().reset_index()
-status_counts.columns = ['Status', 'Count']
-pie = alt.Chart(status_counts).mark_arc().encode(
-    theta='Count',
-    color='Status',
-    tooltip=['Status', 'Count']
-).properties(title="Course Status Breakdown")
-st.altair_chart(pie, use_container_width=True)
+# --- Horizontal Progress Bars Section ---
+st.markdown("### 📏 Progress Overview")
+
+col_bar1, col_bar2, col_bar3 = st.columns(3)
+
+with col_bar1:
+    st.subheader("📘 Courses")
+    st.progress(completed_courses / total_courses)
+    st.caption(f"{completed_courses} of {total_courses} courses completed ({completed_courses_pct}%)")
+
+with col_bar2:
+    st.subheader("🎓 Theses")
+    st.progress(theses_completed / theses_total)
+    st.caption(f"{theses_completed} of {theses_total} theses completed ({theses_pct}%)")
+
+with col_bar3:
+    st.subheader("🧠 Comps")
+    st.progress(comps_completed / comps_total)
+    st.caption(f"{comps_completed} of {comps_total} comps completed ({comps_pct}%)")
 
 # --- Raw Table ---
 st.markdown("### 🧾 Raw Course Table")
 visible_cols = ['Course', 'Course Number', 'Required Days', 'Completed Days', 'Completed Books', 'Book Pages', 'Status']
-st.dataframe(df[visible_cols])
+existing_cols = [col for col in visible_cols if col in df.columns]
+if existing_cols:
+    st.dataframe(df[existing_cols])
+else:
+    st.warning("⚠️ None of the expected columns were found in the data.")
