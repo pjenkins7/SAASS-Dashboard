@@ -79,10 +79,6 @@ else:
     st.balloons()
     st.success("🎉 SAASS Graduation Day is here!")
 
-# --- Permanent Motivational Quote ---
-st.markdown("### 💬 Constant Motivation")
-st.info("“The strongest are those brought up in the hardest schools.” – Thucydides")
-
 # --- Progress Math ---
 total_days = (program_end - program_start).days
 completed_days = (current_date - program_start).days
@@ -188,3 +184,11 @@ if existing_cols:
     st.dataframe(df_totals)
 else:
     st.warning("⚠️ None of the expected columns were found in the data.")
+
+# --- Footer Motivational Quote ---
+st.markdown("""
+<hr style='margin-top: 3rem; margin-bottom: 1rem;'>
+<div style='text-align: center; font-weight: bold; font-size: 18px;'>
+    “The strongest are those brought up in the hardest schools.” – Thucydides
+</div>
+""", unsafe_allow_html=True)
