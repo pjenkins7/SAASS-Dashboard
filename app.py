@@ -99,13 +99,11 @@ comps_pct = round((comps_completed / comps_total) * 100, 1)
 #     unsafe_allow_html=True
 # )
 
-st.markdown("### 🚣‍♀️ Team Progress (Rowing Across the Program)")
-
 st.markdown(
     f"""
     <div style="position: relative; height: 120px; background: #e0e0e0; border-radius: 10px; overflow: hidden; margin-bottom: 1rem;">
 
-        <!-- Water progress layer with animation -->
+        <!-- Static water background -->
         <div style="
             position: absolute;
             top: 0;
@@ -115,35 +113,19 @@ st.markdown(
             background-image: url('https://i.imgur.com/BaPp4bU.png');
             background-size: cover;
             background-repeat: repeat-x;
-            animation: moveWaves 4s linear infinite;
         "></div>
 
-        <!-- Rowing image -->
         <img src="https://media1.tenor.com/m/eHyjV1MtfWEAAAAd/canoeing-yuri-cheban.gif" 
              style="position: absolute; top: 10px; left: {program_pct_complete}%; transform: translateX(-50%); height: 100px;" />
 
-        <!-- Text Label -->
         <div style="position: absolute; bottom: 5px; width: 100%; text-align: center; font-weight: bold; color: #004466;">
             {program_pct_complete}% Complete
         </div>
     </div>
-
-    <script>
-    const waves = document.querySelectorAll('[style*="animation: moveWaves"]');
-    waves.forEach(el => {{
-        el.style.animation = "moveWaves 4s linear infinite";
-    }});
-    </script>
-
-    <style>
-    @keyframes moveWaves {{
-        0% {{ background-position-x: 0; }}
-        100% {{ background-position-x: 1000px; }}
-    }}
-    </style>
     """,
     unsafe_allow_html=True
 )
+
 
 
 # --- KPI Display (Reorganized Layout) ---
