@@ -95,11 +95,6 @@ st.markdown(
             {program_pct_complete}% Complete
         </div>
     </div>
-     <!-- Flag on the right, vertically centered -->
-    <div style="flex-shrink: 0; font-size: 40px; line-height: 100px;">
-        🏁
-    </div>
-</div>
 """,
 unsafe_allow_html=True
 )
