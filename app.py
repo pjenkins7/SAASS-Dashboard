@@ -85,38 +85,15 @@ comps_completed = 0
 comps_pct = round((comps_completed / comps_total) * 100, 1)
 
 # Rowing Progress GIF
-# st.markdown("### 🚣‍♀️ Team Progress (Rowing Across the Program)")
-# st.markdown(
-#     f"""
-#     <div style="position: relative; height: 100px; background: linear-gradient(to right, #a2d4f1 {program_pct_complete}%, #e0e0e0 {program_pct_complete}%); border-radius: 10px; overflow: hidden; margin-bottom: 1rem;">
-#         <img src="https://media1.tenor.com/m/eHyjV1MtfWEAAAAd/canoeing-yuri-cheban.gif" 
-#              style="position: absolute; top: 10px; left: {program_pct_complete}%; transform: translateX(-50%); height: 80px;" />
-#         <div style="position: absolute; bottom: 5px; width: 100%; text-align: center; font-weight: bold;">
-#             {program_pct_complete}% Complete
-#         </div>
-#     </div>
-#     """,
-#     unsafe_allow_html=True
-# )
-
-
 st.markdown("### 🚣‍♀️ Team Progress (Rowing Across the Program)")
-
 st.markdown(
     f"""
-    <div style="position: relative; height: 100px; background: linear-gradient(to right, #a2d4f1 {program_pct_complete}%, #e0e0e0 {program_pct_complete}%); 
-                border-radius: 10px; overflow: hidden; margin-bottom: 1rem;">
-
-        <!-- Rowing GIF -->
+    <div style="position: relative; height: 100px; background: linear-gradient(to right, #a2d4f1 {program_pct_complete}%, #e0e0e0 {program_pct_complete}%); border-radius: 10px; overflow: hidden; margin-bottom: 1rem;">
         <img src="https://media1.tenor.com/m/eHyjV1MtfWEAAAAd/canoeing-yuri-cheban.gif" 
              style="position: absolute; top: 10px; left: {program_pct_complete}%; transform: translateX(-50%); height: 80px;" />
-
-        <!-- Finish Line Flag Emoji -->
         <div style="position: absolute; top: 10px; right: 5px; height: 40px; width: 40px; display: flex; align-items: center; justify-content: center; font-size: 32px;">
             🏁
         </div>
-
-        <!-- Progress Text -->
         <div style="position: absolute; bottom: 5px; width: 100%; text-align: center; font-weight: bold;">
             {program_pct_complete}% Complete
         </div>
@@ -124,6 +101,8 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
+
 
 
 
