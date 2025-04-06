@@ -105,31 +105,38 @@ st.markdown(
     f"""
     <div style="position: relative; height: 120px; background: #e0e0e0; border-radius: 10px; overflow: hidden; margin-bottom: 1rem;">
 
-        <!-- Water fill effect -->
+        <!-- Water progress layer with animation -->
         <div style="
             position: absolute;
             top: 0;
             left: 0;
             height: 100%;
             width: {program_pct_complete}%;
-            background: url('https://i.imgur.com/BaPp4bU.png');  /* Wave pattern */
+            background-image: url('https://i.imgur.com/BaPp4bU.png');
             background-size: cover;
-            animation: wave 2s infinite linear;
-        ">
-        </div>
+            background-repeat: repeat-x;
+            animation: moveWaves 4s linear infinite;
+        "></div>
 
-        <!-- Rowing GIF -->
+        <!-- Rowing image -->
         <img src="https://media1.tenor.com/m/eHyjV1MtfWEAAAAd/canoeing-yuri-cheban.gif" 
              style="position: absolute; top: 10px; left: {program_pct_complete}%; transform: translateX(-50%); height: 100px;" />
 
-        <!-- Label -->
+        <!-- Text Label -->
         <div style="position: absolute; bottom: 5px; width: 100%; text-align: center; font-weight: bold; color: #004466;">
             {program_pct_complete}% Complete
         </div>
     </div>
 
+    <script>
+    const waves = document.querySelectorAll('[style*="animation: moveWaves"]');
+    waves.forEach(el => {{
+        el.style.animation = "moveWaves 4s linear infinite";
+    }});
+    </script>
+
     <style>
-    @keyframes wave {{
+    @keyframes moveWaves {{
         0% {{ background-position-x: 0; }}
         100% {{ background-position-x: 1000px; }}
     }}
@@ -137,6 +144,7 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
 
 # --- KPI Display (Reorganized Layout) ---
 st.markdown("### 📊 Summary Statistics")
