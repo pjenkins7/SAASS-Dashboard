@@ -2,9 +2,11 @@ import streamlit as st
 import pandas as pd
 import altair as alt
 import datetime
+import pytz
+from datetime import datetime as dt
 
 st.set_page_config(page_title="SAASS Progress Dashboard", layout="wide")
-st.title("\U0001F4D8 SAASS Class XXXIV Progress Dashboard")
+st.title("📘 SAASS Class XXXIV Progress Dashboard")
 st.markdown("Auto-updating dashboard from Google Sheets — tracking books, courses, and program milestones.")
 
 # --- Load Google Sheet Data ---
@@ -60,24 +62,28 @@ program_start = datetime.datetime(2024, 7, 1)
 program_end = datetime.datetime(2025, 6, 4)
 current_date = datetime.datetime.today()
 
-# Countdown to graduation
-days_remaining = (program_end - current_date).days
+# --- Live Countdown (Central Time) ---
+central = pytz.timezone("US/Central")
+graduation_datetime = central.localize(dt(2025, 6, 4, 10, 0, 0))
+now = dt.now(central)
+time_remaining = graduation_datetime - now
 
-st.markdown("### 🎓 Countdown to Graduation")
+days = time_remaining.days
+hours, remainder = divmod(time_remaining.seconds, 3600)
+minutes, seconds = divmod(remainder, 60)
 
-if days_remaining > 30:
-    st.success(f"⏳ {days_remaining} days to go until graduation on **June 4, 2025**!")
-elif 1 < days_remaining <= 30:
-    st.warning(f"🎯 Just {days_remaining} days left — you're almost there!")
-elif days_remaining == 1:
-    st.info("🚨 Graduation is **TOMORROW**!")
-elif days_remaining == 0:
-    st.balloons()
-    st.success("🎉 Today is **Graduation Day**! You made it!")
+st.markdown("### 🎓 Live Countdown to Graduation (June 4, 2025)")
+if time_remaining.total_seconds() > 0:
+    st.info(f"⏳ **{days} days, {hours} hours, {minutes} minutes, {seconds} seconds** remaining!")
 else:
-    st.success("✅ Graduation complete. Congrats, SAASS grad!")
+    st.balloons()
+    st.success("🎉 SAASS Graduation Day is here!")
 
+# --- Permanent Motivational Quote ---
+st.markdown("### 💬 Constant Motivation")
+st.info("“The strongest are those brought up in the hardest schools.” – Thucydides")
 
+# --- Progress Math ---
 total_days = (program_end - program_start).days
 completed_days = (current_date - program_start).days
 program_pct_complete = round((completed_days / total_days) * 100, 2)
@@ -102,7 +108,7 @@ comps_total = 45
 comps_completed = 0
 comps_pct = round((comps_completed / comps_total) * 100, 1)
 
-# Rowing Progress GIF
+# --- Rowing Progress GIF ---
 st.markdown("### 🚣‍♀️ Team Progress (Rowing Across the Program)")
 st.markdown(
     f"""
@@ -114,12 +120,8 @@ st.markdown(
         </div>
     </div>
 """,
-unsafe_allow_html=True
+    unsafe_allow_html=True
 )
-
-
-
-
 
 # --- KPI Display (Reorganized Layout) ---
 st.markdown("### 📊 Summary Statistics")
@@ -132,15 +134,15 @@ with col2:
     st.metric("Books Completed", f"{total_books}")
     st.metric("Pages Read", f"{total_pages}")
 with col3:
-    st.metric("Theses Completed", f"{theses_completed} / {theses_total} ({theses_pct}%)")
+    st.metric("🔔 Theses Completed", f"{theses_completed} / {theses_total} ({theses_pct}%)")
     st.metric("Comps Completed", f"{comps_completed} / {comps_total} ({comps_pct}%)")
 
+# --- Course Completion Chart ---
 st.markdown("### 📚 Course Completion Status")
-df['Progress %'] = (df['Completed Days'] / df['Required Days']).clip(0, 1)*100
+df['Progress %'] = (df['Completed Days'] / df['Required Days']).clip(0, 1) * 100
 bar = alt.Chart(df).mark_bar().encode(
     x=alt.X('Course', sort='-y'),
     y=alt.Y('Progress %', scale=alt.Scale(domain=[0, 100])),
-    # color='Status',
     tooltip=['Course', 'Completed Days', 'Required Days', 'Status']
 ).properties(width=800, height=400)
 st.altair_chart(bar, use_container_width=True)
@@ -160,7 +162,7 @@ st.subheader("📘 Courses Completed")
 st.progress(completed_courses / total_courses)
 st.caption(f"{completed_courses} of {total_courses} courses completed ({completed_courses_pct}%)")
 
-st.subheader("🎓 Theses")
+st.subheader("🔔 Theses")
 st.progress(theses_completed / theses_total)
 st.caption(f"{theses_completed} of {theses_total} theses completed ({theses_pct}%)")
 
@@ -168,17 +170,8 @@ st.subheader("🧠 Comps")
 st.progress(comps_completed / comps_total)
 st.caption(f"{comps_completed} of {comps_total} comps completed ({comps_pct}%)")
 
-
-
-# st.markdown("### Course Table")
-# visible_cols = ['Course', 'Course Number', 'Required Days', 'Completed Days', 'Completed Books', 'Book Pages', 'Status']
-# existing_cols = [col for col in visible_cols if col in df.columns]
-# if existing_cols:
-#     st.dataframe(df[existing_cols])
-# else:
-#     st.warning("⚠️ None of the expected columns were found in the data.")
-
-st.markdown("### Course Table")
+# --- Course Table ---
+st.markdown("### 📋 Course Table")
 visible_cols = ['Course', 'Course Number', 'Required Days', 'Completed Days', 'Completed Books', 'Book Pages', 'Status']
 existing_cols = [col for col in visible_cols if col in df.columns]
 if existing_cols:
