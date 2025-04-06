@@ -99,8 +99,9 @@ st.markdown(
     <div style="flex-shrink: 0; font-size: 40px; line-height: 100px;">
         🏁
     </div>
-    """,
-    unsafe_allow_html=True
+</div>
+""",
+unsafe_allow_html=True
 )
 
 
