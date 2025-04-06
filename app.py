@@ -99,10 +99,10 @@ with col3:
     st.metric("Comps Completed", f"{comps_completed} / {comps_total} ({comps_pct}%)")
 
 st.markdown("### 📚 Course Completion Status")
-df['Progress %'] = (df['Completed Days'] / df['Required Days']).clip(0, 1)
+df['Progress %'] = (df['Completed Days'] / df['Required Days']).clip(0, 1)*100
 bar = alt.Chart(df).mark_bar().encode(
     x=alt.X('Course', sort='-y'),
-    y=alt.Y('Progress %', scale=alt.Scale(domain=[0, 1])),
+    y=alt.Y('Progress %', scale=alt.Scale(domain=[0, 100])),
     # color='Status',
     tooltip=['Course', 'Completed Days', 'Required Days', 'Status']
 ).properties(width=800, height=400)
