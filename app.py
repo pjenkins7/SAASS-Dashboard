@@ -84,21 +84,59 @@ comps_total = 45
 comps_completed = 0
 comps_pct = round((comps_completed / comps_total) * 100, 1)
 
-# ADD IT RIGHT HERE
+# # ADD IT RIGHT HERE
+# st.markdown("### 🚣‍♀️ Team Progress (Rowing Across the Program)")
+# st.markdown(
+#     f"""
+#     <div style="position: relative; height: 100px; background: linear-gradient(to right, #a2d4f1 {program_pct_complete}%, #e0e0e0 {program_pct_complete}%); border-radius: 10px; overflow: hidden; margin-bottom: 1rem;">
+#         <img src="https://media1.tenor.com/m/eHyjV1MtfWEAAAAd/canoeing-yuri-cheban.gif" 
+#              style="position: absolute; top: 10px; left: {program_pct_complete}%; transform: translateX(-50%); height: 80px;" />
+#         <div style="position: absolute; bottom: 5px; width: 100%; text-align: center; font-weight: bold;">
+#             {program_pct_complete}% Complete
+#         </div>
+#     </div>
+#     """,
+#     unsafe_allow_html=True
+# )
+
 st.markdown("### 🚣‍♀️ Team Progress (Rowing Across the Program)")
+
 st.markdown(
     f"""
-    <div style="position: relative; height: 100px; background: linear-gradient(to right, #a2d4f1 {program_pct_complete}%, #e0e0e0 {program_pct_complete}%); border-radius: 10px; overflow: hidden; margin-bottom: 1rem;">
+    <div style="position: relative; height: 120px; background: #e0e0e0; border-radius: 10px; overflow: hidden; margin-bottom: 1rem;">
+
+        <!-- Water fill effect -->
+        <div style="
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: {program_pct_complete}%;
+            background: url('https://i.imgur.com/BaPp4bU.png');  /* Wave pattern */
+            background-size: cover;
+            animation: wave 2s infinite linear;
+        ">
+        </div>
+
+        <!-- Rowing GIF -->
         <img src="https://media1.tenor.com/m/eHyjV1MtfWEAAAAd/canoeing-yuri-cheban.gif" 
-             style="position: absolute; top: 10px; left: {program_pct_complete}%; transform: translateX(-50%); height: 80px;" />
-        <div style="position: absolute; bottom: 5px; width: 100%; text-align: center; font-weight: bold;">
+             style="position: absolute; top: 10px; left: {program_pct_complete}%; transform: translateX(-50%); height: 100px;" />
+
+        <!-- Label -->
+        <div style="position: absolute; bottom: 5px; width: 100%; text-align: center; font-weight: bold; color: #004466;">
             {program_pct_complete}% Complete
         </div>
     </div>
+
+    <style>
+    @keyframes wave {{
+        0% {{ background-position-x: 0; }}
+        100% {{ background-position-x: 1000px; }}
+    }}
+    </style>
     """,
     unsafe_allow_html=True
 )
-
 
 # --- KPI Display (Reorganized Layout) ---
 st.markdown("### 📊 Summary Statistics")
