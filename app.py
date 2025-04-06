@@ -60,6 +60,24 @@ program_start = datetime.datetime(2024, 7, 1)
 program_end = datetime.datetime(2025, 6, 4)
 current_date = datetime.datetime.today()
 
+# Countdown to graduation
+days_remaining = (program_end - current_date).days
+
+st.markdown("### 🎓 Countdown to Graduation")
+
+if days_remaining > 30:
+    st.success(f"⏳ {days_remaining} days to go until graduation on **June 4, 2025**!")
+elif 1 < days_remaining <= 30:
+    st.warning(f"🎯 Just {days_remaining} days left — you're almost there!")
+elif days_remaining == 1:
+    st.info("🚨 Graduation is **TOMORROW**!")
+elif days_remaining == 0:
+    st.balloons()
+    st.success("🎉 Today is **Graduation Day**! You made it!")
+else:
+    st.success("✅ Graduation complete. Congrats, SAASS grad!")
+
+
 total_days = (program_end - program_start).days
 completed_days = (current_date - program_start).days
 program_pct_complete = round((completed_days / total_days) * 100, 2)
