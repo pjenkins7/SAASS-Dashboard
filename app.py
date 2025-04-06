@@ -112,7 +112,9 @@ st.markdown(
              style="position: absolute; top: 10px; left: {program_pct_complete}%; transform: translateX(-50%); height: 80px;" />
 
         <!-- Finish Line Flag Emoji -->
-        <div style="position: absolute; right: 10px; top: 10px; font-size: 36px;">🏁</div>
+        <div style="position: absolute; top: 10px; right: 5px; height: 40px; width: 40px; display: flex; align-items: center; justify-content: center; font-size: 32px;">
+            🏁
+        </div>
 
         <!-- Progress Text -->
         <div style="position: absolute; bottom: 5px; width: 100%; text-align: center; font-weight: bold;">
@@ -122,6 +124,7 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
 
 
 # --- KPI Display (Reorganized Layout) ---
