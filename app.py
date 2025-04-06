@@ -95,8 +95,8 @@ st.markdown(
             {program_pct_complete}% Complete
         </div>
     </div>
-    <!-- Finish line flag outside the bar -->
-    <div style="font-size: 40px; margin-left: 5px;">
+     <!-- Flag on the right, vertically centered -->
+    <div style="flex-shrink: 0; font-size: 40px; line-height: 100px;">
         🏁
     </div>
     """,
