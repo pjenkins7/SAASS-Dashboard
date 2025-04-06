@@ -97,6 +97,10 @@ st.markdown(
         <div style="position: absolute; bottom: 5px; width: 100%; text-align: center; font-weight: bold;">
             {program_pct_complete}% Complete
         </div>
+        <!-- Finish line flag outside the bar -->
+        <div style="font-size: 40px; margin-left: 5px;">
+            🏁
+        </div>
     </div>
     """,
     unsafe_allow_html=True
