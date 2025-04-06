@@ -72,7 +72,7 @@ days = time_remaining.days
 hours, remainder = divmod(time_remaining.seconds, 3600)
 minutes, seconds = divmod(remainder, 60)
 
-st.markdown("### 🎓 Live Countdown to Graduation (June 4, 2025)")
+st.markdown("### 🎓 Live Countdown to Graduation (4 June 2025 @ 1000)")
 if time_remaining.total_seconds() > 0:
     st.info(f"⏳ **{days} days, {hours} hours, {minutes} minutes, {seconds} seconds** remaining!")
 else:
