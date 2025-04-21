@@ -130,7 +130,7 @@ with col2:
     st.metric("Books Completed", f"{total_books}")
     st.metric("Pages Read", f"{total_pages}")
 with col3:
-    st.metric("🔔 Theses Completed", f"{theses_completed} / {theses_total} ({theses_pct}%)")
+    st.metric("Theses Completed", f"{theses_completed} / {theses_total} ({theses_pct}%)")
     st.metric("Comps Completed", f"{comps_completed} / {comps_total} ({comps_pct}%)")
 
 # --- Course Completion Chart ---
