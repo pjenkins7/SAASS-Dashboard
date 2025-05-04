@@ -97,7 +97,7 @@ program_day_pct = round((total_completed_days / total_required_days) * 100, 1) i
 
 # --- Theses & Comps ---
 theses_total = 45
-theses_completed = 14
+theses_completed = 15
 theses_pct = round((theses_completed / theses_total) * 100, 1)
 
 comps_total = 45
