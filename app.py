@@ -97,7 +97,7 @@ program_day_pct = round((total_completed_days / total_required_days) * 100, 1) i
 
 # --- Theses & Comps ---
 theses_total = 45
-theses_completed = 22
+theses_completed = 23
 theses_pct = round((theses_completed / theses_total) * 100, 1)
 
 comps_total = 45
@@ -178,7 +178,7 @@ if existing_cols:
         'Completed Days': df['Completed Days'].sum(),
         'Completed Books': df['Completed Books'].sum(),
         'Book Pages': df['Book Pages'].sum(),
-        'Status': '⏳ In Progress'
+        'Status': '✅ Completed'
     }
     df_totals = pd.concat([df_totals, pd.DataFrame([totals_row])], ignore_index=True)
     st.dataframe(df_totals)
