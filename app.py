@@ -178,7 +178,7 @@ if existing_cols:
         'Completed Days': df['Completed Days'].sum(),
         'Completed Books': df['Completed Books'].sum(),
         'Book Pages': df['Book Pages'].sum(),
-        'Status': '✅ Completed'
+        'Status': 
     }
     df_totals = pd.concat([df_totals, pd.DataFrame([totals_row])], ignore_index=True)
     st.dataframe(df_totals)
