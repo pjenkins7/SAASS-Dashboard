@@ -101,7 +101,7 @@ theses_completed = 45
 theses_pct = round((theses_completed / theses_total) * 100, 1)
 
 comps_total = 45
-comps_completed = 13
+comps_completed = 44
 comps_pct = round((comps_completed / comps_total) * 100, 1)
 
 # --- Rowing Progress GIF ---
