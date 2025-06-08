@@ -82,7 +82,7 @@ else:
 # --- Progress Math ---
 total_days = (program_end - program_start).days
 completed_days = (current_date - program_start).days
-program_pct_complete = round((completed_days / total_days) * 100, 2)
+program_pct_complete = round((total_days / total_days) * 100, 2)
 
 # --- KPI Calculations ---
 total_courses = len(df)
@@ -123,7 +123,7 @@ st.markdown(
 st.markdown("### 📊 Summary Statistics")
 col1, col2, col3 = st.columns(3)
 with col1:
-    st.metric("Program Progress (# of Program Days Completed)", f"{completed_days} / {total_days} days ({program_pct_complete}%)")
+    st.metric("Program Progress (# of Program Days Completed)", f"{total_days}/ {total_days} days ({program_pct_complete}%)")
     st.metric("Course Progress (# of Course Days Completed)", f"{total_completed_days} / {total_required_days} ({program_day_pct}%)")
     st.metric("Course Completion (# of Courses Completed)", f"{completed_courses} / {total_courses} ({completed_courses_pct}%)")
 with col2:
