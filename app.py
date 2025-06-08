@@ -77,7 +77,7 @@ if time_remaining.total_seconds() > 0:
     st.info(f"⏳ **{days} days, {hours} hours, {minutes} minutes, {seconds} seconds** remaining!")
 else:
     st.balloons()
-    st.success("🎉 SAASS Graduation Day is here!")
+    st.success("🎉 Congrats!")
 
 # --- Progress Math ---
 total_days = (program_end - program_start).days
