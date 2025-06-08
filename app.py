@@ -110,7 +110,7 @@ st.markdown(
     f"""
     <div style="position: relative; height: 100px; background: linear-gradient(to right, #a2d4f1 {program_pct_complete}%, #e0e0e0 {program_pct_complete}%); border-radius: 10px; overflow: hidden; margin-bottom: 1rem;">
         # <img src="https://media1.tenor.com/m/eHyjV1MtfWEAAAAd/canoeing-yuri-cheban.gif" 
-             style="position: absolute; top: 10px; left: {program_pct_complete}%; transform: translateX(-50%); height: 80px;" />
+        #      style="position: absolute; top: 10px; left: {program_pct_complete}%; transform: translateX(-50%); height: 80px;" />
         <div style="position: absolute; bottom: 5px; width: 100%; text-align: center; font-weight: bold;">
             {program_pct_complete}% Complete
         </div>
