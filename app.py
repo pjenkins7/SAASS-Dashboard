@@ -147,7 +147,7 @@ st.altair_chart(bar, use_container_width=True)
 st.markdown("### 📈 Visual Progress Overview")
 
 st.subheader("🗓️ Program Progress")
-st.progress(program_pct_complete / 100)
+st.progress(100 / 100)
 st.caption(f"{completed_days} of {total_days} calendar days completed ({program_pct_complete}%)")
 
 st.subheader("📅 Course Progress")
